@@ -3,9 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var testRouter = require('./routes/test');
 
 var app = express();
 
@@ -19,8 +21,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cors({
+  "origin": ["http://localhost:8000"],  //允许所有前端域名
+  "credentials":true,//允许携带凭证
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE", //被允许的提交方式
+  "allowedHeaders":['Content-Type','Authorization']//被允许的post方式的请求头
+}));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/test', testRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
